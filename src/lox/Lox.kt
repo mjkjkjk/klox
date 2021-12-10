@@ -38,14 +38,21 @@ class Lox {
         private fun run(source: String): Unit {
             val scanner: Scanner = Scanner(source)
             val tokens: List<Token> = scanner.scanTokens()
+            val parser: Parser = Parser(tokens)
+            val expression: Expr? = parser.parse()
 
-            for (token in tokens) {
-                println(token)
-            }
+            // stop in case of syntax error
+            if (hadError || expression == null) return
+
+            println(AstPrinter().print(expression))
         }
 
-        fun error(line: Int, message: String) {
-            report(line, "", message)
+        fun error(token: Token, message: String) {
+            if (token.type == TokenType.EOF) {
+                report(token.line,  " at end", message)
+            } else {
+                report(token.line, " at '${token.lexeme}'", message)
+            }
         }
 
         private fun report(line: Int, where: String, message: String) {
