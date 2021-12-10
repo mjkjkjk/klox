@@ -18,12 +18,15 @@ fun main(args: Array<String>): Unit {
 
 class Lox {
     companion object {
+        private val interpreter: Interpreter = Interpreter()
         private var hadError: Boolean = false
+        private var hadRuntimeError: Boolean = false
 
         fun runFile(path: String): Unit {
             val bytes: ByteArray = Files.readAllBytes(Paths.get(path))
             run(String(bytes, Charset.defaultCharset()))
             if (this.hadError) exitProcess(65)
+            if (this.hadRuntimeError) exitProcess(70)
         }
 
         fun runPrompt() {
@@ -44,6 +47,8 @@ class Lox {
             // stop in case of syntax error
             if (hadError || expression == null) return
 
+            interpreter.interpret(expression)
+
             println(AstPrinter().print(expression))
         }
 
@@ -58,6 +63,11 @@ class Lox {
         private fun report(line: Int, where: String, message: String) {
             System.err.println("[line $line] Error$where: $message")
             this.hadError = true
+        }
+
+        fun runtimeError(error: RuntimeError) {
+            System.err.println("${error.message}\n[line ${error.token.line}]")
+            this.hadRuntimeError = true
         }
     }
 
