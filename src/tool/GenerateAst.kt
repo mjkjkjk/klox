@@ -18,6 +18,11 @@ fun main(args: Array<String>) {
         "Literal  :: val value: Any?",
         "Unary    :: val operator: Token, val right: Expr"
     ))
+
+    GenerateAst().defineAst(outputDir, "Stmt", listOf<String>(
+        "Expression :: val expression: Expr",
+        "Print      :: val expression: Expr"
+    ))
 }
 
 class GenerateAst {

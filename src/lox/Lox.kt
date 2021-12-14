@@ -42,14 +42,12 @@ class Lox {
             val scanner: Scanner = Scanner(source)
             val tokens: List<Token> = scanner.scanTokens()
             val parser: Parser = Parser(tokens)
-            val expression: Expr? = parser.parse()
+            val statements = parser.parse()
 
             // stop in case of syntax error
-            if (hadError || expression == null) return
+            if (hadError) return
 
-            interpreter.interpret(expression)
-
-            println(AstPrinter().print(expression))
+            interpreter.interpret(statements)
         }
 
         fun error(token: Token, message: String) {
@@ -70,6 +68,4 @@ class Lox {
             this.hadRuntimeError = true
         }
     }
-
-
 }
