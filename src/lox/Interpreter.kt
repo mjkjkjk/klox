@@ -1,6 +1,8 @@
 package lox
 
 class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
+    private val environment: Environment = Environment()
+
     fun interpret(statements: List<Stmt?>) {
         try {
             for (statement in statements) {
@@ -143,10 +145,16 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     }
 
     override fun visitVariableExpr(expr: Expr.Companion.Variable): Any? {
-        TODO("Not yet implemented")
+        return environment.get(expr.name)
     }
 
     override fun visitVarStmt(stmt: Stmt.Companion.Var): Unit? {
-        TODO("Not yet implemented")
+        var value: Any? = null
+        if (stmt.initializer != null) { // TODO change initializer to nullablse?
+            value = evaluate(stmt.initializer)
+        }
+
+        environment.define(stmt.name.lexeme, value)
+        return null
     }
 }
