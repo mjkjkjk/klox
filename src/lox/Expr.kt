@@ -4,8 +4,9 @@ abstract class Expr {
     interface Visitor<R> {
         fun visitBinaryExpr(expr: Binary): R?
         fun visitGroupingExpr(expr: Grouping): R?
-        fun visitLiteralExpr(expr: Literal): R?
         fun visitUnaryExpr(expr: Unary): R?
+        fun visitLiteralExpr(expr: Literal): R?
+        fun visitVariableExpr(expr: Variable): R?
     }
 
     companion object {
@@ -19,14 +20,19 @@ abstract class Expr {
                 return visitor.visitGroupingExpr(this)
             }
         }
+        class Unary(val operator: Token, val right: Expr) : Expr() {
+            override fun <R> accept(visitor: Visitor<R>): R? {
+                return visitor.visitUnaryExpr(this)
+            }
+        }
         class Literal(val value: Any?) : Expr() {
             override fun <R> accept(visitor: Visitor<R>): R? {
                 return visitor.visitLiteralExpr(this)
             }
         }
-        class Unary(val operator: Token, val right: Expr) : Expr() {
+        class Variable(val name: Token) : Expr() {
             override fun <R> accept(visitor: Visitor<R>): R? {
-                return visitor.visitUnaryExpr(this)
+                return visitor.visitVariableExpr(this)
             }
         }
     }

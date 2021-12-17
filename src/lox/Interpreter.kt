@@ -1,7 +1,7 @@
 package lox
 
 class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
-    fun interpret(statements: List<Stmt>) {
+    fun interpret(statements: List<Stmt?>) {
         try {
             for (statement in statements) {
                 execute(statement)
@@ -99,9 +99,9 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         return expr.accept(this)
     }
 
-    private fun execute(statement: Stmt): Unit
+    private fun execute(statement: Stmt?): Unit
     {
-        statement.accept(this)
+        statement?.accept(this)
     }
 
     override fun visitExpressionStmt(stmt: Stmt.Companion.Expression): Unit? {
@@ -140,5 +140,13 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         }
 
         return obj.toString()
+    }
+
+    override fun visitVariableExpr(expr: Expr.Companion.Variable): Any? {
+        TODO("Not yet implemented")
+    }
+
+    override fun visitVarStmt(stmt: Stmt.Companion.Var): Unit? {
+        TODO("Not yet implemented")
     }
 }

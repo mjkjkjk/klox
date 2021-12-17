@@ -15,12 +15,14 @@ fun main(args: Array<String>) {
     GenerateAst().defineAst(outputDir, "Expr", listOf<String>(
         "Binary   :: val left: Expr, val operator: Token, val right: Expr",
         "Grouping :: val expression: Expr",
+        "Unary    :: val operator: Token, val right: Expr",
         "Literal  :: val value: Any?",
-        "Unary    :: val operator: Token, val right: Expr"
+        "Variable :: val name: Token"
     ))
 
     GenerateAst().defineAst(outputDir, "Stmt", listOf<String>(
         "Expression :: val expression: Expr",
+        "Var        :: val name: Token, val initializer: Expr",
         "Print      :: val expression: Expr"
     ))
 }

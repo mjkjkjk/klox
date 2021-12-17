@@ -3,10 +3,10 @@ package lox
 class Parser(private val tokens: List<Token>) {
     private var current = 0;
 
-    fun parse(): List<Stmt> {
-        val statements: MutableList<Stmt> = ArrayList<Stmt>()
+    fun parse(): List<Stmt?> {
+        val statements: MutableList<Stmt?> = ArrayList<Stmt?>()
         while(!isAtEnd()) {
-            statements.add(statement())
+            statements.add(declaration())
         }
 
         return statements
@@ -15,6 +15,17 @@ class Parser(private val tokens: List<Token>) {
     private fun expression(): Expr
     {
         return equality()
+    }
+
+    private fun declaration(): Stmt?
+    {
+        try {
+            if (match(TokenType.VAR)) return varDeclaration()
+            return statement()
+        } catch(error: ParseError) {
+            synchronize()
+            return null
+        }
     }
 
     private fun statement(): Stmt
@@ -29,6 +40,19 @@ class Parser(private val tokens: List<Token>) {
         val value = expression()
         consume(TokenType.SEMICOLON, "Expect ';' after value.")
         return Stmt.Companion.Print(value)
+    }
+
+    private fun varDeclaration(): Stmt
+    {
+        val name = consume(TokenType.IDENTIFIER, "Expect variable name.")
+
+        var initializer: Expr? = null
+        if (match(TokenType.EQUAL)) {
+            initializer = expression()
+        }
+
+        consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.")
+        return initializer?.let { Stmt.Companion.Var(name, it) }!!
     }
 
     private fun expressionStatement(): Stmt
@@ -102,6 +126,10 @@ class Parser(private val tokens: List<Token>) {
 
         if (match(TokenType.NUMBER, TokenType.STRING)) {
             return Expr.Companion.Literal(previous().literal)
+        }
+
+        if (match(TokenType.IDENTIFIER)) {
+            return Expr.Companion.Variable(previous())
         }
 
         if (match(TokenType.LEFT_PAREN)) {
