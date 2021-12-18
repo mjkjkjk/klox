@@ -31,6 +31,7 @@ class Parser(private val tokens: List<Token>) {
     private fun statement(): Stmt
     {
         if (match(TokenType.PRINT)) return printStatement()
+        if (match(TokenType.LEFT_BRACE)) return Stmt.Companion.Block(block())
 
         return expressionStatement()
     }
@@ -62,9 +63,21 @@ class Parser(private val tokens: List<Token>) {
         return Stmt.Companion.Expression(expr)
     }
 
+    private fun block(): List<Stmt>
+    {
+        val statements = ArrayList<Stmt>()
+
+        while (!check(TokenType.RIGHT_BRACE) && !isAtEnd()) {
+            statements.add(declaration()!!)
+        }
+
+        consume(TokenType.RIGHT_BRACE, "Expect '} after block.")
+        return statements
+    }
+
     private fun assignment(): Expr
     {
-        var expr = equality()
+        val expr = equality()
 
         // l value
         if (match(TokenType.EQUAL)) {
