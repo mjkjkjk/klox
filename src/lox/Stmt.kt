@@ -7,6 +7,7 @@ abstract class Stmt {
         fun visitIfStmt(stmt: If): R?
         fun visitVarStmt(stmt: Var): R?
         fun visitPrintStmt(stmt: Print): R?
+        fun visitWhileStmt(stmt: While): R?
     }
 
     companion object {
@@ -33,6 +34,11 @@ abstract class Stmt {
         class Print(val expression: Expr) : Stmt() {
             override fun <R> accept(visitor: Visitor<R>): R? {
                 return visitor.visitPrintStmt(this)
+            }
+        }
+        class While(val condition: Expr, val body: Stmt) : Stmt() {
+            override fun <R> accept(visitor: Visitor<R>): R? {
+                return visitor.visitWhileStmt(this)
             }
         }
     }

@@ -27,8 +27,8 @@ fun main(args: Array<String>) {
         "Expression :: val expression: Expr",
         "If         :: val condition: Expr, val thenBranch: Stmt, val elseBranch: Stmt?",
         "Var        :: val name: Token, val initializer: Expr",
-        "Print      :: val expression: Expr"
-    ))
+        "Print      :: val expression: Expr",
+        "While      :: val condition: Expr, val body: Stmt"    ))
 }
 
 class GenerateAst {

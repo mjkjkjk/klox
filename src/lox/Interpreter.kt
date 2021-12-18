@@ -205,4 +205,11 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
         return evaluate(expr.right)
     }
+
+    override fun visitWhileStmt(stmt: Stmt.Companion.While): Unit? {
+        while (isTruthy(evaluate(stmt.condition))) {
+            execute(stmt.body)
+        }
+        return null
+    }
 }
