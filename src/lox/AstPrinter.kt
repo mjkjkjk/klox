@@ -57,4 +57,8 @@ class AstPrinter : Expr.Visitor<String> {
     override fun visitAssignExpr(expr: Expr.Companion.Assign): String? {
         return "Assigned: ${expr.name} as: ${expr.value}"
     }
+
+    override fun visitLogicalExpr(expr: Expr.Companion.Logical): String? {
+        TODO("Not yet implemented")
+    }
 }

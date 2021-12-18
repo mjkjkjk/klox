@@ -16,8 +16,9 @@ fun main(args: Array<String>) {
         "Assign   :: val name: Token, val value: Expr",
         "Binary   :: val left: Expr, val operator: Token, val right: Expr",
         "Grouping :: val expression: Expr",
-        "Unary    :: val operator: Token, val right: Expr",
         "Literal  :: val value: Any?",
+        "Logical  :: val left: Expr, val operator: Token, val right: Expr",
+        "Unary    :: val operator: Token, val right: Expr",
         "Variable :: val name: Token"
     ))
 

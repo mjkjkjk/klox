@@ -193,4 +193,16 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
         return null
     }
+
+    override fun visitLogicalExpr(expr: Expr.Companion.Logical): Any? {
+        val left = evaluate(expr.left)
+
+        if (expr.operator.type == TokenType.OR) {
+            if (isTruthy(left)) return left
+        } else {
+            if (!isTruthy(left)) return left
+        }
+
+        return evaluate(expr.right)
+    }
 }
