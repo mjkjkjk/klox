@@ -183,4 +183,14 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         executeBlock(stmt.statements, Environment(environment))
         return null
     }
+
+    override fun visitIfStmt(stmt: Stmt.Companion.If): Unit? {
+        if (isTruthy(evaluate(stmt.condition))) {
+            execute(stmt.thenBranch)
+        } else if (stmt.elseBranch != null) {
+            execute(stmt.elseBranch)
+        }
+
+        return null
+    }
 }
