@@ -14,7 +14,7 @@ class Parser(private val tokens: List<Token>) {
 
     private fun expression(): Expr
     {
-        return equality()
+        return assignment()
     }
 
     private fun declaration(): Stmt?
@@ -60,6 +60,27 @@ class Parser(private val tokens: List<Token>) {
         val expr = expression()
         consume(TokenType.SEMICOLON, "Expect ';' after expression.")
         return Stmt.Companion.Expression(expr)
+    }
+
+    private fun assignment(): Expr
+    {
+        var expr = equality()
+
+        // l value
+        if (match(TokenType.EQUAL)) {
+            val equals = previous()
+            val value = assignment()
+
+            if (expr is Expr.Companion.Variable) {
+                val name = expr.name
+                return Expr.Companion.Assign(name, value)
+            }
+
+            error(equals, "Invalid assignment target.")
+        }
+
+        // r value
+        return expr
     }
 
     private fun equality(): Expr {

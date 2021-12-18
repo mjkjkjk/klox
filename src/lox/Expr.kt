@@ -2,6 +2,7 @@ package lox
 
 abstract class Expr {
     interface Visitor<R> {
+        fun visitAssignExpr(expr: Assign): R?
         fun visitBinaryExpr(expr: Binary): R?
         fun visitGroupingExpr(expr: Grouping): R?
         fun visitUnaryExpr(expr: Unary): R?
@@ -10,6 +11,11 @@ abstract class Expr {
     }
 
     companion object {
+        class Assign(val name: Token, val value: Expr) : Expr() {
+            override fun <R> accept(visitor: Visitor<R>): R? {
+                return visitor.visitAssignExpr(this)
+            }
+        }
         class Binary(val left: Expr, val operator: Token, val right: Expr) : Expr() {
             override fun <R> accept(visitor: Visitor<R>): R? {
                 return visitor.visitBinaryExpr(this)

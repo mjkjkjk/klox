@@ -150,11 +150,17 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
     override fun visitVarStmt(stmt: Stmt.Companion.Var): Unit? {
         var value: Any? = null
-        if (stmt.initializer != null) { // TODO change initializer to nullablse?
+        if (stmt.initializer != null) { // TODO change initializer to nullable?
             value = evaluate(stmt.initializer)
         }
 
         environment.define(stmt.name.lexeme, value)
         return null
+    }
+
+    override fun visitAssignExpr(expr: Expr.Companion.Assign): Any? {
+        val value = evaluate(expr.value)
+        environment.assign(expr.name, value)
+        return value
     }
 }

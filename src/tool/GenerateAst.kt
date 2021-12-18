@@ -13,6 +13,7 @@ fun main(args: Array<String>) {
     val outputDir = args[0]
 
     GenerateAst().defineAst(outputDir, "Expr", listOf<String>(
+        "Assign   :: val name: Token, val value: Expr",
         "Binary   :: val left: Expr, val operator: Token, val right: Expr",
         "Grouping :: val expression: Expr",
         "Unary    :: val operator: Token, val right: Expr",

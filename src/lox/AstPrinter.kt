@@ -49,4 +49,12 @@ class AstPrinter : Expr.Visitor<String> {
 
         return builder.toString()
     }
+
+    override fun visitVariableExpr(expr: Expr.Companion.Variable): String? {
+        return "Defined: ${expr.name}"
+    }
+
+    override fun visitAssignExpr(expr: Expr.Companion.Assign): String? {
+        return "Assigned: ${expr.name} as: ${expr.value}"
+    }
 }
