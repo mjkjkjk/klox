@@ -64,6 +64,27 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         return null
     }
 
+    override fun visitCallExpr(expr: Expr.Companion.Call): Any? {
+        val callee = evaluate(expr.callee)
+
+        val arguments = ArrayList<Any?>()
+        for (argument in expr.arguments) {
+            arguments.add(evaluate(argument))
+        }
+
+        if (callee !is LoxCallable) {
+            throw RuntimeError(expr.paren, "Can only call functions and classes.")
+        }
+
+        val function: LoxCallable = callee as LoxCallable
+
+        if (arguments.size != function.arity()) {
+            throw RuntimeError(expr.paren, "Expected ${function.arity()} arguments but got ${arguments.size}.")
+        }
+
+        return function.call(this, arguments)
+    }
+
     override fun visitGroupingExpr(expr: Expr.Companion.Grouping): Any? {
         return evaluate(expr.expression)
     }
@@ -106,7 +127,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         statement?.accept(this)
     }
 
-    fun executeBlock(statements: List<Stmt?>, environment: Environment)
+    private fun executeBlock(statements: List<Stmt?>, environment: Environment)
     {
         val previous = this.environment
 
