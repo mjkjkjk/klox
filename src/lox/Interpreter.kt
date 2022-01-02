@@ -3,7 +3,7 @@ package lox
 import lib.Clock
 
 class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
-    private val globals = Environment()
+    val globals = Environment()
     private var environment: Environment = globals
 
     init {
@@ -134,7 +134,7 @@ class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         statement?.accept(this)
     }
 
-    private fun executeBlock(statements: List<Stmt?>, environment: Environment)
+    fun executeBlock(statements: List<Stmt?>, environment: Environment)
     {
         val previous = this.environment
 
@@ -238,6 +238,12 @@ class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         while (isTruthy(evaluate(stmt.condition))) {
             execute(stmt.body)
         }
+        return null
+    }
+
+    override fun visitFunctionStmt(stmt: Stmt.Companion.Function): Unit? {
+        val function = LoxFunction(stmt)
+        environment.define(stmt.name.lexeme, function)
         return null
     }
 }

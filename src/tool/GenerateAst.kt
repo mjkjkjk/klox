@@ -26,6 +26,7 @@ fun main(args: Array<String>) {
     GenerateAst().defineAst(outputDir, "Stmt", listOf<String>(
         "Block      :: val statements: List<Stmt>",
         "Expression :: val expression: Expr",
+        "Function   :: val name: Token, val params: List<Token>, val body: List<Stmt>",
         "If         :: val condition: Expr, val thenBranch: Stmt, val elseBranch: Stmt?",
         "Var        :: val name: Token, val initializer: Expr",
         "Print      :: val expression: Expr",
