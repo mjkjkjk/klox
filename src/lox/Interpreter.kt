@@ -1,7 +1,14 @@
 package lox
 
-class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
-    private var environment: Environment = Environment()
+import lib.Clock
+
+class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
+    private val globals = Environment()
+    private var environment: Environment = globals
+
+    init {
+        globals.define("clock", Clock())
+    }
 
     fun interpret(statements: List<Stmt?>) {
         try {

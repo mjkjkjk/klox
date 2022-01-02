@@ -61,4 +61,8 @@ class AstPrinter : Expr.Visitor<String> {
     override fun visitLogicalExpr(expr: Expr.Companion.Logical): String? {
         TODO("Not yet implemented")
     }
+
+    override fun visitCallExpr(expr: Expr.Companion.Call): String? {
+        TODO("Not yet implemented")
+    }
 }
