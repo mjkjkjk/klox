@@ -6,7 +6,7 @@ import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
     if (args.size != 1) {
-        System.err.println("Usage: generate_ast <output directory>");
+        System.err.println("Usage: generate_ast <output directory>")
         exitProcess(64)
     }
 
@@ -30,7 +30,8 @@ fun main(args: Array<String>) {
         "If         :: val condition: Expr, val thenBranch: Stmt, val elseBranch: Stmt?",
         "Var        :: val name: Token, val initializer: Expr",
         "Print      :: val expression: Expr",
-        "While      :: val condition: Expr, val body: Stmt"    ))
+        "Return     :: val keyword: Token, val value: Expr?",
+        "While      :: val condition: Expr, val body: Stmt"))
 }
 
 class GenerateAst {

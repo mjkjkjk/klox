@@ -83,7 +83,7 @@ class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
             throw RuntimeError(expr.paren, "Can only call functions and classes.")
         }
 
-        val function: LoxCallable = callee as LoxCallable
+        val function: LoxCallable = callee
 
         if (arguments.size != function.arity()) {
             throw RuntimeError(expr.paren, "Expected ${function.arity()} arguments but got ${arguments.size}.")
@@ -129,7 +129,7 @@ class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         return expr.accept(this)
     }
 
-    private fun execute(statement: Stmt?): Unit
+    private fun execute(statement: Stmt?)
     {
         statement?.accept(this)
     }
@@ -245,5 +245,14 @@ class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         val function = LoxFunction(stmt)
         environment.define(stmt.name.lexeme, function)
         return null
+    }
+
+    override fun visitReturnStmt(stmt: Stmt.Companion.Return): Unit? {
+        var value: Any? = null
+        if (stmt.value != null) {
+            value = evaluate(stmt.value)
+        }
+
+        throw Return(value)
     }
 }

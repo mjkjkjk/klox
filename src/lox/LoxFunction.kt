@@ -12,7 +12,12 @@ class LoxFunction(private val declaration: Stmt.Companion.Function) : LoxCallabl
             environment.define(declaration.params[i].lexeme, arguments[i])
         }
 
-        interpreter.executeBlock(declaration.body, environment)
+        try {
+            interpreter.executeBlock(declaration.body, environment)
+        } catch (returnValue: Return) {
+            return returnValue.value
+        }
+
         return null
     }
 
