@@ -4,7 +4,12 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.Visitor<Unit> {
+    private enum class FunctionType {
+        NONE,
+        FUNCTION
+    }
     private val scopes = Stack<MutableMap<String, Boolean>>()
+    private var currentFunction = FunctionType.NONE
 
     fun resolve(statements: List<Stmt?>) {
         for (statement in statements) {
@@ -20,7 +25,10 @@ class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.V
         expression.accept(this)
     }
 
-    private fun resolveFunction(function: Stmt.Companion.Function) {
+    private fun resolveFunction(function: Stmt.Companion.Function, type: FunctionType) {
+        val enclosingFunction = currentFunction
+        currentFunction = type
+
         beginScope()
         for (param in function.params) {
             declare(param)
@@ -28,6 +36,8 @@ class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.V
         }
         resolve(function.body)
         endScope()
+
+        currentFunction = enclosingFunction
     }
 
     private fun beginScope() {
@@ -42,6 +52,9 @@ class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.V
         if (scopes.empty()) return
 
         val scope = scopes.peek()
+        if (scope.containsKey(name.lexeme)) {
+            Lox.error(name, "Already a variable with this name in this scope.")
+        }
         scope[name.lexeme] = false
     }
 
@@ -123,7 +136,8 @@ class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.V
     override fun visitFunctionStmt(stmt: Stmt.Companion.Function): Unit? {
         declare(stmt.name)
         define(stmt.name)
-        resolveFunction(stmt)
+
+        resolveFunction(stmt, FunctionType.FUNCTION)
         return null
     }
 
@@ -149,6 +163,10 @@ class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.V
     }
 
     override fun visitReturnStmt(stmt: Stmt.Companion.Return): Unit? {
+        if (currentFunction == FunctionType.NONE) {
+            Lox.error(stmt.keyword, "Can't return from top-level code.")
+        }
+
         if (stmt.value != null){
             resolve(stmt.value)
         }

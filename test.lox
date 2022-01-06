@@ -20,3 +20,9 @@ fun makeCounter() {
 var counter = makeCounter();
 counter();
 counter();
+
+fun bad() {
+    var a = "first";
+    print a;
+}
+bad();

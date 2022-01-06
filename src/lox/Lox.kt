@@ -50,6 +50,9 @@ class Lox {
             val resolver = Resolver(interpreter)
             resolver.resolve(statements)
 
+            // stop in case of resolution error
+            if (hadError) return
+
             interpreter.interpret(statements)
         }
 
