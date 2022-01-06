@@ -255,4 +255,8 @@ class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
         throw Return(value)
     }
+
+    fun resolve(expression: Expr, i: Int) {
+
+    }
 }
