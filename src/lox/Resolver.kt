@@ -6,14 +6,14 @@ import kotlin.collections.HashMap
 class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.Visitor<Unit> {
     private val scopes = Stack<MutableMap<String, Boolean>>()
 
-    private fun resolve(statements: List<Stmt>) {
+    fun resolve(statements: List<Stmt?>) {
         for (statement in statements) {
             resolve(statement)
         }
     }
 
-    private fun resolve(statement: Stmt) {
-        statement.accept(this)
+    private fun resolve(statement: Stmt?) {
+        statement?.accept(this)
     }
 
     private fun resolve(expression: Expr) {

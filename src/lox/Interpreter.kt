@@ -5,6 +5,7 @@ import lib.Clock
 class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     val globals = Environment()
     private var environment: Environment = globals
+    private val locals = HashMap<Expr, Int>()
 
     init {
         globals.define("clock", Clock())
@@ -188,7 +189,16 @@ class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     }
 
     override fun visitVariableExpr(expr: Expr.Companion.Variable): Any? {
-        return environment.get(expr.name)
+        return lookUpVariable(expr.name, expr)
+    }
+
+    private fun lookUpVariable(name: Token, expr: Expr): Any? {
+        val distance = locals[expr]
+        if (distance != null) {
+            return environment.getAt(distance, name.lexeme)
+        } else {
+            return globals.get(name)
+        }
     }
 
     override fun visitVarStmt(stmt: Stmt.Companion.Var): Unit? {
@@ -203,7 +213,14 @@ class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
     override fun visitAssignExpr(expr: Expr.Companion.Assign): Any? {
         val value = evaluate(expr.value)
-        environment.assign(expr.name, value)
+
+        val distance = locals[expr]
+        if (distance != null) {
+            environment.assignAt(distance, expr.name, value)
+        } else {
+            globals.assign(expr.name, value)
+        }
+
         return value
     }
 
@@ -256,7 +273,7 @@ class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         throw Return(value)
     }
 
-    fun resolve(expression: Expr, i: Int) {
-
+    fun resolve(expression: Expr, depth: Int) {
+        locals[expression] = depth
     }
 }
