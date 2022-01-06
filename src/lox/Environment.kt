@@ -1,7 +1,7 @@
 package lox
 
 class Environment(private val enclosing: Environment? = null) {
-    private val values: MutableMap<String, Any?> = HashMap<String, Any?>()
+    private val values: MutableMap<String, Any?> = HashMap()
 
     fun get(name: Token): Any? {
         if (values.containsKey(name.lexeme)) {

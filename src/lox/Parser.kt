@@ -4,7 +4,7 @@ class Parser(private val tokens: List<Token>) {
     private var current = 0
 
     fun parse(): List<Stmt?> {
-        val statements: MutableList<Stmt?> = ArrayList<Stmt?>()
+        val statements: MutableList<Stmt?> = ArrayList()
         while(!isAtEnd()) {
             statements.add(declaration())
         }
@@ -402,6 +402,6 @@ class Parser(private val tokens: List<Token>) {
     }
 
     companion object {
-        private class ParseError : RuntimeException() {}
+        private class ParseError : RuntimeException()
     }
 }

@@ -2,8 +2,8 @@ package lox
 
 import lib.Clock
 
-class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
-    val globals = Environment()
+class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
+    private val globals = Environment()
     private var environment: Environment = globals
     private val locals = HashMap<Expr, Int>()
 
@@ -67,9 +67,8 @@ class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
             }
             TokenType.BANG_EQUAL -> return !isEqual(left, right)
             TokenType.EQUAL_EQUAL -> return isEqual(left, right)
+            else -> return null
         }
-
-        return null
     }
 
     override fun visitCallExpr(expr: Expr.Companion.Call): Any? {
@@ -104,15 +103,14 @@ class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     override fun visitUnaryExpr(expr: Expr.Companion.Unary): Any? {
         val right = evaluate(expr.right)
 
-        when (expr.operator.type) {
-            TokenType.BANG -> return !isTruthy(right)
+        return when (expr.operator.type) {
+            TokenType.BANG -> !isTruthy(right)
             TokenType.MINUS -> {
                 checkNumberOperand(expr.operator, right)
-                return -right.toString().toDouble()
+                -right.toString().toDouble()
             }
+            else -> null
         }
-
-        return null
     }
 
     private fun checkNumberOperand(operator: Token, operand: Any?) {
@@ -194,18 +192,15 @@ class Interpreter() : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
     private fun lookUpVariable(name: Token, expr: Expr): Any? {
         val distance = locals[expr]
-        if (distance != null) {
-            return environment.getAt(distance, name.lexeme)
+        return if (distance != null) {
+            environment.getAt(distance, name.lexeme)
         } else {
-            return globals.get(name)
+            globals.get(name)
         }
     }
 
     override fun visitVarStmt(stmt: Stmt.Companion.Var): Unit? {
-        var value: Any? = null
-        if (stmt.initializer != null) { // TODO change initializer to nullable?
-            value = evaluate(stmt.initializer)
-        }
+        val value: Any? = evaluate(stmt.initializer)
 
         environment.define(stmt.name.lexeme, value)
         return null

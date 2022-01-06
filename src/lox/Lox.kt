@@ -5,7 +5,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.system.exitProcess
 
-fun main(args: Array<String>): Unit {
+fun main(args: Array<String>) {
     if (args.size > 1) {
         println("Usage: lox [script]")
         exitProcess(64)
@@ -22,7 +22,7 @@ class Lox {
         private var hadError: Boolean = false
         private var hadRuntimeError: Boolean = false
 
-        fun runFile(path: String): Unit {
+        fun runFile(path: String) {
             val bytes: ByteArray = Files.readAllBytes(Paths.get(path))
             run(String(bytes, Charset.defaultCharset()))
             if (this.hadError) exitProcess(65)
@@ -38,10 +38,10 @@ class Lox {
             }
         }
 
-        private fun run(source: String): Unit {
-            val scanner: Scanner = Scanner(source)
+        private fun run(source: String) {
+            val scanner = Scanner(source)
             val tokens: List<Token> = scanner.scanTokens()
-            val parser: Parser = Parser(tokens)
+            val parser = Parser(tokens)
             val statements = parser.parse()
 
             // stop in case of syntax error

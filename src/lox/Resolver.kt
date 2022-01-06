@@ -150,9 +150,7 @@ class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.V
 
     override fun visitVarStmt(stmt: Stmt.Companion.Var): Unit? {
         declare(stmt.name)
-        if (stmt.initializer != null) {
-            resolve(stmt.initializer)
-        }
+        resolve(stmt.initializer)
         define(stmt.name)
         return null
     }

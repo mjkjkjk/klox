@@ -40,7 +40,7 @@ class Scanner(private val source: String) {
         return tokens
     }
 
-    private fun scanToken(): Unit {
+    private fun scanToken() {
         when (val c: Char = advance()) {
             '(' -> addToken(LEFT_PAREN)
             ')' -> addToken(RIGHT_PAREN)
@@ -74,26 +74,26 @@ class Scanner(private val source: String) {
                 } else if (isAlpha(c)){
                     identifier()
                 } else {
-                    Lox.error(Token(TokenType.STRING, "", "", line), "Unexpected character.")
+                    Lox.error(Token(STRING, "", "", line), "Unexpected character.")
                 }
             }
         }
     }
 
-    private fun identifier(): Unit {
+    private fun identifier() {
         while (isAlphaNumeric(peek())) {
             advance()
         }
 
         val text: String = source.substring(start, current)
-        var type: TokenType? = keywords.get(text)
+        var type: TokenType? = keywords[text]
         if (type == null) {
             type = IDENTIFIER
         }
         addToken(type)
     }
 
-    private fun number(): Unit {
+    private fun number() {
         while(isDigit(peek())) advance()
 
         // look for fractional part
@@ -106,14 +106,14 @@ class Scanner(private val source: String) {
         addToken(NUMBER, source.substring(start, current).toDouble())
     }
 
-    private fun string(): Unit {
+    private fun string() {
         while(peek() != '"' && !isAtEnd()) {
             if (peek() == '\n') line++
             advance()
         }
 
         if (isAtEnd()) {
-            Lox.error(Token(TokenType.STRING, "", "", line), "Unterminated string.")
+            Lox.error(Token(STRING, "", "", line), "Unterminated string.")
             return
         }
 
@@ -166,12 +166,11 @@ class Scanner(private val source: String) {
         return source[current++]
     }
 
-    private fun addToken(type: TokenType): Unit {
+    private fun addToken(type: TokenType) {
         addToken(type, null)
     }
 
-    private fun addToken(type: TokenType, literal: Any?): Unit
-    {
+    private fun addToken(type: TokenType, literal: Any?) {
         val text: String = source.substring(start, current)
         tokens.add(Token(type, text, literal, line))
     }

@@ -12,7 +12,7 @@ fun main(args: Array<String>) {
 
     val outputDir = args[0]
 
-    GenerateAst().defineAst(outputDir, "Expr", listOf<String>(
+    GenerateAst().defineAst(outputDir, "Expr", listOf(
         "Assign   :: val name: Token, val value: Expr",
         "Binary   :: val left: Expr, val operator: Token, val right: Expr",
         "Call     :: val callee: Expr, val paren: Token, val arguments: List<Expr>",
@@ -23,7 +23,7 @@ fun main(args: Array<String>) {
         "Variable :: val name: Token"
     ))
 
-    GenerateAst().defineAst(outputDir, "Stmt", listOf<String>(
+    GenerateAst().defineAst(outputDir, "Stmt", listOf(
         "Block      :: val statements: List<Stmt>",
         "Expression :: val expression: Expr",
         "Function   :: val name: Token, val params: List<Token>, val body: List<Stmt>",
