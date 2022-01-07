@@ -128,6 +128,12 @@ class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.V
         return null
     }
 
+    override fun visitClassStmt(stmt: Stmt.Companion.Class): Unit? {
+        declare(stmt.name)
+        define(stmt.name)
+        return null
+    }
+
     override fun visitExpressionStmt(stmt: Stmt.Companion.Expression): Unit? {
         resolve(stmt.expression)
         return null

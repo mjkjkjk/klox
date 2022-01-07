@@ -271,4 +271,11 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     fun resolve(expression: Expr, depth: Int) {
         locals[expression] = depth
     }
+
+    override fun visitClassStmt(stmt: Stmt.Companion.Class): Unit? {
+        environment.define(stmt.name.lexeme, null)
+        val klass = LoxClass(stmt.name.lexeme)
+        environment.assign(stmt.name, klass)
+        return null
+    }
 }
