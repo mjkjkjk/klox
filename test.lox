@@ -8,3 +8,6 @@ print Test;
 
 var t = Test();
 print t;
+
+t.prop = 123;
+print t.prop;

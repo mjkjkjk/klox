@@ -206,6 +206,9 @@ class Parser(private val tokens: List<Token>) {
             if (expr is Expr.Companion.Variable) {
                 val name = expr.name
                 return Expr.Companion.Assign(name, value)
+            } else if (expr is Expr.Companion.Get) {
+                val get = expr as Expr.Companion.Get
+                return Expr.Companion.Set(get.obj, get.name, value)
             }
 
             error(equals, "Invalid assignment target.")
@@ -302,8 +305,11 @@ class Parser(private val tokens: List<Token>) {
         var expr = primary()
 
         while (true) {
-            if (match(TokenType.LEFT_PAREN)) {
-                expr = finishCall(expr)
+            expr = if (match(TokenType.LEFT_PAREN)) {
+                finishCall(expr)
+            } else if (match(TokenType.DOT)) {
+                val name = consume(TokenType.IDENTIFIER, "Expect property name after '.'.")
+                Expr.Companion.Get(expr, name)
             } else {
                 break
             }

@@ -184,4 +184,14 @@ class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.V
         return null
     }
 
+    override fun visitGetExpr(expr: Expr.Companion.Get): Unit? {
+        resolve(expr.obj)
+        return null
+    }
+
+    override fun visitSetExpr(expr: Expr.Companion.Set): Unit? {
+        resolve(expr.value)
+        resolve(expr.obj)
+        return null
+    }
 }

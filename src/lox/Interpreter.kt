@@ -278,4 +278,26 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         environment.assign(stmt.name, klass)
         return null
     }
+
+    override fun visitGetExpr(expr: Expr.Companion.Get): Any? {
+        val obj = evaluate(expr.obj)
+
+        if (obj is LoxInstance) {
+            return obj.get(expr.name)
+        }
+
+        throw RuntimeError(expr.name, "Only instances have properties.")
+    }
+
+    override fun visitSetExpr(expr: Expr.Companion.Set): Any? {
+        val obj = evaluate(expr.obj)
+
+        if (obj !is LoxInstance) {
+            throw RuntimeError(expr.name, "Only instances have fields.")
+        }
+
+        val value = evaluate(expr.value)
+        (obj as LoxInstance).set(expr.name, value)
+        return value
+    }
 }
