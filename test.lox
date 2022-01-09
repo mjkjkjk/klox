@@ -11,3 +11,7 @@ print t;
 
 t.prop = 123;
 print t.prop;
+
+exit();
+
+print 1;

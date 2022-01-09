@@ -21,12 +21,14 @@ class Lox {
         private val interpreter: Interpreter = Interpreter()
         private var hadError: Boolean = false
         private var hadRuntimeError: Boolean = false
+        private var shouldExit: Boolean = false
 
         fun runFile(path: String) {
             val bytes: ByteArray = Files.readAllBytes(Paths.get(path))
             run(String(bytes, Charset.defaultCharset()))
             if (this.hadError) exitProcess(65)
             if (this.hadRuntimeError) exitProcess(70)
+            if (this.shouldExit) exitProcess(0)
         }
 
         fun runPrompt() {
@@ -72,6 +74,11 @@ class Lox {
         fun runtimeError(error: RuntimeError) {
             System.err.println("${error.message}\n[line ${error.token.line}]")
             this.hadRuntimeError = true
+        }
+
+        fun runtimePrint(msg: String) {
+            println(msg)
+            this.shouldExit = true
         }
     }
 }

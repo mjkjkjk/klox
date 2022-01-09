@@ -1,6 +1,7 @@
 package lox
 
 import lib.Clock
+import lib.Exit
 
 class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     private val globals = Environment()
@@ -9,6 +10,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
     init {
         globals.define("clock", Clock())
+        globals.define("exit", Exit())
     }
 
     fun interpret(statements: List<Stmt?>) {
@@ -16,6 +18,8 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
             for (statement in statements) {
                 execute(statement)
             }
+        } catch (error: Exit.ExitProgram) {
+            Lox.runtimePrint(">>> exit() called, stopping execution")
         } catch (error: RuntimeError) {
             Lox.runtimeError(error)
         }
@@ -297,7 +301,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         }
 
         val value = evaluate(expr.value)
-        (obj as LoxInstance).set(expr.name, value)
+        obj.set(expr.name, value)
         return value
     }
 }
