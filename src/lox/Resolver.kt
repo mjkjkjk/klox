@@ -6,7 +6,8 @@ import kotlin.collections.HashMap
 class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.Visitor<Unit> {
     private enum class FunctionType {
         NONE,
-        FUNCTION
+        FUNCTION,
+        METHOD
     }
     private val scopes = Stack<MutableMap<String, Boolean>>()
     private var currentFunction = FunctionType.NONE
@@ -131,6 +132,12 @@ class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.V
     override fun visitClassStmt(stmt: Stmt.Companion.Class): Unit? {
         declare(stmt.name)
         define(stmt.name)
+
+        for (method in stmt.methods) {
+            val declaration = FunctionType.METHOD
+            resolveFunction(method, declaration)
+        }
+
         return null
     }
 
