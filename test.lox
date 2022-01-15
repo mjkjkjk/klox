@@ -16,4 +16,37 @@ print 1;
 
 print t.test();
 
+class Egotist {
+    speak() {
+        print this;
+    }
+}
+var method = Egotist().speak;
+method();
+
+class Cake {
+    taste() {
+        var adjective = "delicious";
+        print "The " + this.flavor + " cake is " + adjective + "!";
+    }
+}
+var cake = Cake();
+cake.flavor = "German chocolate";
+cake.taste();
+
+class Foo {
+    init() {
+        return;
+    }
+}
+
+class Dog {
+    init(color) {
+        this.color = color;
+    }
+}
+
+var dog = Dog("yellow");
+print dog.color;
+
 exit();

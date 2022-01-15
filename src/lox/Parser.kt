@@ -343,6 +343,10 @@ class Parser(private val tokens: List<Token>) {
             return Expr.Companion.Literal(previous().literal)
         }
 
+        if (match(TokenType.THIS)) {
+            return Expr.Companion.This(previous());
+        }
+
         if (match(TokenType.IDENTIFIER)) {
             return Expr.Companion.Variable(previous())
         }

@@ -258,7 +258,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     }
 
     override fun visitFunctionStmt(stmt: Stmt.Companion.Function): Unit? {
-        val function = LoxFunction(stmt, environment)
+        val function = LoxFunction(stmt, environment, false)
         environment.define(stmt.name.lexeme, function)
         return null
     }
@@ -281,7 +281,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
         val methods = HashMap<String, LoxFunction>()
         for (method in stmt.methods) {
-            val function = LoxFunction(method, environment)
+            val function = LoxFunction(method, environment, method.name.lexeme == "this")
             methods[method.name.lexeme] = function
         }
 
@@ -311,5 +311,9 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         val value = evaluate(expr.value)
         obj.set(expr.name, value)
         return value
+    }
+
+    override fun visitThisExpr(expr: Expr.Companion.This): Any? {
+        return lookUpVariable(expr.keyword, expr)
     }
 }

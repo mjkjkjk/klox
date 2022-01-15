@@ -7,10 +7,18 @@ class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.V
     private enum class FunctionType {
         NONE,
         FUNCTION,
-        METHOD
+        METHOD,
+        INITIALIZER
     }
+
+    private enum class ClassType {
+        NONE,
+        CLASS
+    }
+
     private val scopes = Stack<MutableMap<String, Boolean>>()
     private var currentFunction = FunctionType.NONE
+    private var currentClass = ClassType.NONE
 
     fun resolve(statements: List<Stmt?>) {
         for (statement in statements) {
@@ -130,13 +138,26 @@ class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.V
     }
 
     override fun visitClassStmt(stmt: Stmt.Companion.Class): Unit? {
+        val enclosingClass = currentClass
+        currentClass = ClassType.CLASS
+
         declare(stmt.name)
         define(stmt.name)
 
+        beginScope()
+        scopes.peek()["this"] = true
+
         for (method in stmt.methods) {
-            val declaration = FunctionType.METHOD
+            var declaration = FunctionType.METHOD
+            if (method.name.lexeme == "init") {
+                declaration = FunctionType.INITIALIZER
+            }
             resolveFunction(method, declaration)
         }
+
+        endScope()
+
+        currentClass = enclosingClass
 
         return null
     }
@@ -179,6 +200,10 @@ class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.V
         }
 
         if (stmt.value != null){
+            if (currentFunction == FunctionType.INITIALIZER) {
+                Lox.error(stmt.keyword, "Can't return a value from an initializer.")
+            }
+
             resolve(stmt.value)
         }
 
@@ -199,6 +224,16 @@ class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.V
     override fun visitSetExpr(expr: Expr.Companion.Set): Unit? {
         resolve(expr.value)
         resolve(expr.obj)
+        return null
+    }
+
+    override fun visitThisExpr(expr: Expr.Companion.This): Unit? {
+        if (currentClass == ClassType.NONE) {
+            Lox.error(expr.keyword, "Can't use 'this' outside of a class.")
+            return null
+        }
+
+        resolveLocal(expr, expr.keyword)
         return null
     }
 }
