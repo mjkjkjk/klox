@@ -32,6 +32,13 @@ class Parser(private val tokens: List<Token>) {
 
     private fun classDeclaration(): Stmt {
         val name = consume(TokenType.IDENTIFIER, "Expect class name.")
+
+        var superclass: Expr.Companion.Variable? = null
+        if (match(TokenType.LESS)) {
+            consume(TokenType.IDENTIFIER, "Expect superclass name.")
+            superclass = Expr.Companion.Variable(previous())
+        }
+
         consume(TokenType.LEFT_BRACE, "Expect '{' before class body.")
 
         val methods = ArrayList<Stmt.Companion.Function>()
@@ -41,7 +48,7 @@ class Parser(private val tokens: List<Token>) {
 
         consume(TokenType.RIGHT_BRACE, "Expect '}' after class body.")
 
-        return Stmt.Companion.Class(name, methods)
+        return Stmt.Companion.Class(name, superclass, methods)
     }
 
     private fun statement(): Stmt

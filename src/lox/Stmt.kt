@@ -19,7 +19,7 @@ abstract class Stmt {
                 return visitor.visitBlockStmt(this)
             }
         }
-        class Class(val name: Token, val methods: List<Stmt.Companion.Function>) : Stmt() {
+        class Class(val name: Token, val superclass: Expr.Companion.Variable?, val methods: List<Stmt.Companion.Function>) : Stmt() {
             override fun <R> accept(visitor: Visitor<R>): R? {
                 return visitor.visitClassStmt(this)
             }

@@ -1,6 +1,10 @@
 package lox
 
-class LoxClass(val name: String, private val methods: Map<String, LoxFunction>): LoxCallable {
+class LoxClass(
+    val name: String,
+    val superclass: LoxClass?,
+    private val methods: Map<String, LoxFunction>
+) : LoxCallable {
     override fun arity(): Int {
         val initializer = findMethod("init") ?: return 0
         return initializer.arity()
