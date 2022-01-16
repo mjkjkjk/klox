@@ -172,7 +172,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         return a == b
     }
 
-    public fun stringify(obj: Any?): String {
+    fun stringify(obj: Any?): String {
         if (obj == null) return "nil"
 
         if (obj is Double) {
@@ -330,7 +330,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         return lookUpVariable(expr.keyword, expr)
     }
 
-    override fun visitSuperExpr(expr: Expr.Companion.Super): Any? {
+    override fun visitSuperExpr(expr: Expr.Companion.Super): Any {
         val distance: Int = locals[expr]!!
 
         val superclass = environment.getAt(distance, "super") as LoxClass

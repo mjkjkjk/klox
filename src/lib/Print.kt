@@ -10,9 +10,9 @@ class Print: LoxCallable
         return 1
     }
 
-    override fun call(interpreter: Interpreter, arguments: List<Any?>): Unit {
+    override fun call(interpreter: Interpreter, arguments: List<Any?>) {
         val arg = arguments[0]
-        if (arg !is String) {
+        if (arg !is String && arg !is Double && arg !is Int) {
             val value = interpreter.evaluate(arg as Expr)
             println(interpreter.stringify(value))
         } else {
