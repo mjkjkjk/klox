@@ -172,20 +172,6 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         return a == b
     }
 
-    fun stringify(obj: Any?): String {
-        if (obj == null) return "nil"
-
-        if (obj is Double) {
-            var text = obj.toString()
-            if (text.endsWith(".0")) {
-                text = text.substring(0, text.length - 2)
-            }
-            return text
-        }
-
-        return obj.toString()
-    }
-
     override fun visitVariableExpr(expr: Expr.Companion.Variable): Any? {
         return lookUpVariable(expr.name, expr)
     }

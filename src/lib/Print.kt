@@ -14,10 +14,24 @@ class Print: LoxCallable
         val arg = arguments[0]
         if (arg !is String && arg !is Double && arg !is Int) {
             val value = interpreter.evaluate(arg as Expr)
-            println(interpreter.stringify(value))
+            println(stringify(value))
         } else {
-            println(arg)
+            println(stringify(arg))
         }
+    }
+
+    private fun stringify(obj: Any?): String {
+        if (obj == null) return "nil"
+
+        if (obj is Double) {
+            var text = obj.toString()
+            if (text.endsWith(".0")) {
+                text = text.substring(0, text.length - 2)
+            }
+            return text
+        }
+
+        return obj.toString()
     }
 
     override fun toString(): String {
