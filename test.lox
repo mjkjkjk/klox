@@ -1,19 +1,18 @@
-class Cake {
-    taste() {
-        print "Simple cake.";
-    }
-
-    prepare() {
-        print "Make the cake.";
+class A {
+    method() {
+        print "A method";
     }
 }
 
-class Cheesecake < Cake {
-    taste() {
-        print "A better cake.";
+class B < A {
+    method() {
+        print "B method";
+    }
+
+    test() {
+        super.method();
     }
 }
 
-var cake = Cheesecake();
-cake.taste();
-cake.prepare();
+class C < B {}
+C().test();

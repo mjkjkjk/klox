@@ -27,6 +27,10 @@ class LoxClass(
             return methods[name]
         }
 
+        if (superclass != null) {
+            return superclass.findMethod(name)
+        }
+
         return null
     }
 }

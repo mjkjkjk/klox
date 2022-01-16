@@ -350,6 +350,13 @@ class Parser(private val tokens: List<Token>) {
             return Expr.Companion.Literal(previous().literal)
         }
 
+        if (match(TokenType.SUPER)) {
+            val keyword = previous()
+            consume(TokenType.DOT, "Expect '.' after 'super'.")
+            val method = consume(TokenType.IDENTIFIER, "Expect superclass method name.")
+            return Expr.Companion.Super(keyword, method)
+        }
+
         if (match(TokenType.THIS)) {
             return Expr.Companion.This(previous());
         }
