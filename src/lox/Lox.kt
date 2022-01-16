@@ -33,6 +33,7 @@ class Lox {
 
         fun runPrompt() {
             while (true) {
+                if (this.shouldExit) exitProcess(0)
                 print("> ")
                 val line: String = readLine() ?: break
                 run(line)

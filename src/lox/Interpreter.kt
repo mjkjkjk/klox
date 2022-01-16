@@ -2,6 +2,7 @@ package lox
 
 import lib.Clock
 import lib.Exit
+import lib.Print
 
 class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     private val globals = Environment()
@@ -11,6 +12,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     init {
         globals.define("clock", Clock())
         globals.define("exit", Exit())
+        globals.define("print", Print())
     }
 
     fun interpret(statements: List<Stmt?>) {
@@ -128,7 +130,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         throw RuntimeError(operator, "Operands must be numbers.")
     }
 
-    private fun evaluate(expr: Expr): Any? {
+    fun evaluate(expr: Expr): Any? {
         return expr.accept(this)
     }
 
@@ -157,12 +159,6 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         return null
     }
 
-    override fun visitPrintStmt(stmt: Stmt.Companion.Print): Unit? {
-        val value = evaluate(stmt.expression)
-        println(stringify(value))
-        return null
-    }
-
     private fun isTruthy(obj: Any?): Boolean {
         if (obj == null) return false
         if (obj is Boolean) return obj
@@ -176,7 +172,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         return a == b
     }
 
-    private fun stringify(obj: Any?): String {
+    public fun stringify(obj: Any?): String {
         if (obj == null) return "nil"
 
         if (obj is Double) {

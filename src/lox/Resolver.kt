@@ -208,11 +208,6 @@ class Resolver(private val interpreter: Interpreter): Expr.Visitor<Unit>, Stmt.V
         return null
     }
 
-    override fun visitPrintStmt(stmt: Stmt.Companion.Print): Unit? {
-        resolve(stmt.expression)
-        return null
-    }
-
     override fun visitReturnStmt(stmt: Stmt.Companion.Return): Unit? {
         if (currentFunction == FunctionType.NONE) {
             Lox.error(stmt.keyword, "Can't return from top-level code.")

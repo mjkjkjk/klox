@@ -55,7 +55,6 @@ class Parser(private val tokens: List<Token>) {
     {
         if (match(TokenType.FOR)) return forStatement()
         if (match(TokenType.IF)) return ifStatement()
-        if (match(TokenType.PRINT)) return printStatement()
         if (match(TokenType.RETURN)) return returnStatement()
         if (match(TokenType.WHILE)) return whileStatement()
         if (match(TokenType.LEFT_BRACE)) return Stmt.Companion.Block(block())
@@ -117,13 +116,6 @@ class Parser(private val tokens: List<Token>) {
         }
 
         return Stmt.Companion.If(condition, thenBranch, elseBranch)
-    }
-
-    private fun printStatement(): Stmt
-    {
-        val value = expression()
-        consume(TokenType.SEMICOLON, "Expect ';' after value.")
-        return Stmt.Companion.Print(value)
     }
 
     private fun returnStatement(): Stmt
@@ -431,7 +423,7 @@ class Parser(private val tokens: List<Token>) {
             if (previous().type == TokenType.SEMICOLON) return
 
             when (peek().type) {
-                TokenType.CLASS, TokenType.FUN, TokenType.IF, TokenType.PRINT,
+                TokenType.CLASS, TokenType.FUN, TokenType.IF,
                 TokenType.RETURN, TokenType.VAR, TokenType.WHILE -> return
                 else -> advance()
             }
