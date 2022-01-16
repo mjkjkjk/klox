@@ -316,7 +316,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         return lookUpVariable(expr.keyword, expr)
     }
 
-    override fun visitSuperExpr(expr: Expr.Companion.Super): Any {
+    override fun visitSuperExpr(expr: Expr.Companion.Super): Any? {
         val distance: Int = locals[expr]!!
 
         val superclass = environment.getAt(distance, "super") as LoxClass
