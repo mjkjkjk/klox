@@ -206,8 +206,7 @@ class Parser(private val tokens: List<Token>) {
                 val name = expr.name
                 return Expr.Companion.Assign(name, value)
             } else if (expr is Expr.Companion.Get) {
-                val get = expr as Expr.Companion.Get
-                return Expr.Companion.Set(get.obj, get.name, value)
+                return Expr.Companion.Set(expr.obj, expr.name, value)
             }
 
             error(equals, "Invalid assignment target.")
@@ -350,7 +349,7 @@ class Parser(private val tokens: List<Token>) {
         }
 
         if (match(TokenType.THIS)) {
-            return Expr.Companion.This(previous());
+            return Expr.Companion.This(previous())
         }
 
         if (match(TokenType.IDENTIFIER)) {
