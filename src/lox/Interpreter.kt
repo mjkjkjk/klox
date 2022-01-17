@@ -1,5 +1,6 @@
 package lox
 
+import lib.Assert
 import lib.Clock
 import lib.Exit
 import lib.Print
@@ -8,20 +9,26 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     private val globals = Environment()
     private var environment: Environment = globals
     private val locals = HashMap<Expr, Int>()
+    private var currentStatement: Stmt? = null
 
     init {
         globals.define("clock", Clock())
         globals.define("exit", Exit())
         globals.define("print", Print())
+        globals.define("assert", Assert())
     }
 
     fun interpret(statements: List<Stmt?>) {
         try {
+            currentStatement = null
             for (statement in statements) {
+                currentStatement = statement
                 execute(statement)
             }
         } catch (error: Exit.ExitProgram) {
             Lox.runtimePrint(">>> exit() called, stopping execution")
+        } catch (error: Assert.AssertFailed) {
+            Lox.runtimePrint("assert() failed, stopping execution", currentStatement)
         } catch (error: RuntimeError) {
             Lox.runtimeError(error)
         }
@@ -159,7 +166,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         return null
     }
 
-    private fun isTruthy(obj: Any?): Boolean {
+    fun isTruthy(obj: Any?): Boolean {
         if (obj == null) return false
         if (obj is Boolean) return obj
         return true

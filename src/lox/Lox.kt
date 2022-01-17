@@ -81,5 +81,10 @@ class Lox {
             println(msg)
             this.shouldExit = true
         }
+
+        fun runtimePrint(msg: String, statement: Stmt?) {
+            println("$msg: $statement")
+            this.shouldExit = true
+        }
     }
 }

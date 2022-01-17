@@ -410,6 +410,10 @@ class Parser(private val tokens: List<Token>) {
         return tokens[current - 1]
     }
 
+    fun current(): Token {
+        return peek()
+    }
+
     private fun error(token: Token, message: String): ParseError {
         Lox.error(token, message)
         return ParseError()

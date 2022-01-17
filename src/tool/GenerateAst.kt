@@ -2,6 +2,7 @@ package tool
 
 import java.io.PrintWriter
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
@@ -29,7 +30,7 @@ fun main(args: Array<String>) {
 
     GenerateAst().defineAst(outputDir, "Stmt", listOf(
         "Block      :: val statements: List<Stmt>",
-        "Class      :: val name: Token, val superclass: Expr.Companion.Variable?, val methods: List<Stmt.Companion.Function>",
+        "Class      :: val name: Token, val superclass: Expr.Companion.Variable?, val methods: List<Function>",
         "Expression :: val expression: Expr",
         "Function   :: val name: Token, val params: List<Token>, val body: List<Stmt>",
         "If         :: val condition: Expr, val thenBranch: Stmt, val elseBranch: Stmt?",
@@ -85,9 +86,21 @@ class GenerateAst {
     }
 
     private fun defineType(writer: PrintWriter, baseName: String, className: String, fieldList: String) {
+        val fields = fieldList.split(", ")
+        val fieldNames = ArrayList<String>()
+        for (field in fields) {
+            fieldNames.add(field.split(' ')[1].trim(':'))
+        }
+        var printableFields = "$className::class.simpleName.toString()"
+        for (fieldName in fieldNames) {
+            printableFields += " + this.$fieldName.toString()"
+        }
         writer.println("        class $className($fieldList) : $baseName() {")
         writer.println("            override fun <R> accept(visitor: Visitor<R>): R? {")
         writer.println("                return visitor.visit$className$baseName(this)")
+        writer.println("            }")
+        writer.println("            override fun toString(): String {")
+        writer.println("                return $printableFields")
         writer.println("            }")
         writer.println("        }")
     }
